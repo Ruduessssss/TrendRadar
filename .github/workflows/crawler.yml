@@ -1,56 +1,56 @@
-name: Hot News Crawler
+name   名字: Hot News Crawler   名称：热点新闻爬虫
 
-on:
-  schedule:
+on   在:
+  schedule   时间表:
     # 我们使用的是 github 官方提供的资源来进行的推送，而每个账号的资源是限额的，为了不被官方判定为滥用而面临封号的风险，不建议比半小时更低
-    - cron: "*/720 * * * *" # 每小时整点运行一次(实际有偏差) 或者 "*/30 * * * *" (每半小时执行一次) 或者 "*/30 0-14 * * *"(每天早上 8 点到晚上 10 点期间，每半小时运行一次)
+    - cron: "0 0 * * *" # 每小时整点运行一次(实际有偏差) 或者 "*/30 * * * *" (每半小时执行一次) 或者 "*/30 0-14 * * *"(每天早上 8 点到晚上 10 点期间，每半小时运行一次)
   workflow_dispatch:
 
 # 添加权限设置
-permissions:
-  contents: write
+permissions   权限:
+  contents   内容: write   内容:写
 
-jobs:
-  crawl:
-    runs-on: ubuntu-latest
+jobs   工作:
+  crawl   爬:
+    runs-on   运行在: ubuntu-latest   上运行:ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    steps   步骤:
+      - name   名字: Checkout repository—name：签出存储库
+        uses   使用: actions/checkout@v3用途:行动/ checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
+      - name   名字: Set up Python—name：设置Python
+        uses   使用: actions/setup-python@v4用途:行动/ setup-python@v4
+        with   与:
+          python-version   python版本: "3.10"
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+      - name   名字: Install dependencies—name：安装依赖项
+        run   运行: |
+          python -m pip install --upgrade pipPython -m PIP install——upgrade PIP
+          pip install -r requirements.txtPIP install -r requirements.txt
 
-      - name: Verify required files
-        run: |
+      - name   名字: Verify required files—name：校验需要的文件
+        run   运行: |
           echo "🔍 检查必需的配置文件..."
 
-          if [ ! -f config/config.yaml ]; then
+          if [ ! -f config/config.yaml ]; then[!]- f配置/配置。yaml];然后
             echo "❌ 错误: config/config.yaml 文件不存在"
             echo "请参考项目文档创建配置文件"
-            exit 1
+            exit 1   出口1
           fi
 
-          if [ ! -f config/frequency_words.txt ]; then
+          if [ ! -f config/frequency_words.txt ]; then[!]-f config/frequency_words.txt]；然后
             echo "❌ 错误: config/frequency_words.txt 文件不存在"
             echo "请参考项目文档创建频率词配置文件"
-            exit 1
+            exit 1   出口1
           fi
 
           echo "✅ 配置文件检查通过"
 
-      - name: Run crawler
+      - name   名字: Run crawler   —name：执行爬虫命令
         env:
-          FEISHU_WEBHOOK_URL: ${{ secrets.FEISHU_WEBHOOK_URL }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          FEISHU_WEBHOOK_URL: $FEISHU_WEBHOOK_URL: ${{secrets。FEISHU_WEBHOOK_URL}}{{ secrets.FEISHU_WEBHOOK_URL }}
+          TELEGRAM_BOT_TOKEN: $TELEGRAM_BOT_TOKEN: ${{secrets。TELEGRAM_BOT_TOKEN}}{{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: $TELEGRAM_CHAT_ID: ${{secrets。TELEGRAM_CHAT_ID}}{{ secrets.TELEGRAM_CHAT_ID }}
           DINGTALK_WEBHOOK_URL: ${{ secrets.DINGTALK_WEBHOOK_URL }}
           WEWORK_WEBHOOK_URL: ${{ secrets.WEWORK_WEBHOOK_URL }}
           WEWORK_MSG_TYPE: ${{ secrets.WEWORK_MSG_TYPE }}
@@ -64,10 +64,10 @@ jobs:
           NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
           BARK_URL: ${{ secrets.BARK_URL }}
           GITHUB_ACTIONS: true
-        run: python main.py
+        run   运行: python main.py
 
-      - name: Commit and push if changes
-        run: |
+      - name   名字: Commit and push if changes
+        run   运行: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
           git add -A
